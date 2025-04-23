@@ -3,8 +3,9 @@
 
 #include <random>
 #include <vector>
+#include <iostream>
 
-using Matrix = std::vector<std::vector<int>>;
+typedef std::vector<std::vector<int>> Matrix;
 
 class MatrixFactory{
     private:
@@ -13,7 +14,7 @@ class MatrixFactory{
     
     public:
         MatrixFactory();
-        Matrix get_random_matrix(int size, int min, int max);
+        Matrix get_random_matrix(size_t size, int min, int max);
 
 };
 

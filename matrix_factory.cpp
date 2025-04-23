@@ -5,7 +5,7 @@
 
 MatrixFactory::MatrixFactory() : gen(rd()) {}
 
-Matrix MatrixFactory::get_random_matrix(int size, int min, int max) {
+Matrix MatrixFactory::get_random_matrix(size_t size, int min, int max) {
     std::uniform_int_distribution<> dist(min, max);
 
     Matrix matrix(size, std::vector<int>(size, 0));
