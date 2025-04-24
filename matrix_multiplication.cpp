@@ -176,3 +176,47 @@ Matrix MatrixMult::strassen(const Matrix& A,const Matrix& B){
     return result;
 
 }
+
+Matrix MatrixMult::inner_bloques_paralelos(const Matrix& A, const Matrix& B) {
+    size_t size = A.size();
+    if (size == 1) {
+        return case_base(A,B);
+    }
+
+    auto sub_A = get_sub_matrices(A);
+    auto sub_B = get_sub_matrices(B);
+    std::vector<Matrix> results_sub_matrices(4, Matrix(size/2, std::vector<int>(size/2)));
+    
+    #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
+    {
+        results_sub_matrices[0] = add(bloques(sub_A[0], sub_B[0]), bloques(sub_A[1], sub_B[2]));
+    }
+    #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
+    {
+        results_sub_matrices[1] = add(bloques(sub_A[0], sub_B[1]), bloques(sub_A[1], sub_B[3]));
+    }
+    #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
+    {
+        results_sub_matrices[2] = add(bloques(sub_A[2], sub_B[0]), bloques(sub_A[3], sub_B[2]));
+    }
+    #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
+    {
+        results_sub_matrices[3] = add(bloques(sub_A[2], sub_B[1]), bloques(sub_A[3], sub_B[3]));
+    }
+    #pragma omp taskwait
+
+    return sub_matrices_to_matrix(results_sub_matrices, size);
+}
+
+
+Matrix MatrixMult::bloques_paralelos(const Matrix& A, const Matrix& B) {
+    Matrix result;
+    #pragma omp parallel
+    {
+        #pragma omp single nowait
+        {
+            result = inner_bloques_paralelos(A,B);
+        }
+    }
+    return result;
+}

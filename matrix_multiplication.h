@@ -13,12 +13,14 @@ class MatrixMult {
         static Matrix add(const Matrix& A, const Matrix& B);
         static Matrix subtract(const Matrix& A, const Matrix& B);
         static Matrix sub_matrices_to_matrix(const std::vector<Matrix> &sub_matrices, size_t size); 
+        static Matrix inner_bloques_paralelos(const Matrix& A, const Matrix& B);
    public:
         static Matrix tradicional(const Matrix& A, const Matrix& B);
         static Matrix vector(const Matrix& A, const Matrix& B);
         static Matrix transpuesta(const Matrix& A, const Matrix& B);
         static Matrix bloques(const Matrix& A, const Matrix& B);
         static Matrix strassen(const Matrix& A, const Matrix& B);
+        static Matrix bloques_paralelos(const Matrix& A, const Matrix& B);
    };
 
 #endif

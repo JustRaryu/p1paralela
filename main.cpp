@@ -21,6 +21,7 @@ int main(){
     size_t matrix_size = 0;
     std::cin >> matrix_size;
 
+    for (size_t potencia = 1; potencia < 10;potencia++)
     Matrix matrix1 = factory.get_random_matrix(matrix_size, 0, 9);
     Matrix matrix2 = factory.get_random_matrix(matrix_size, 0, 9);
 
