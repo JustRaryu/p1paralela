@@ -5,8 +5,9 @@
 #include <vector>
 
 class MatrixMult {
-  private:
+    private:
         MatrixMult() = delete;
+    public:
         static Matrix create_matrix(size_t size);
         static Matrix case_base(const Matrix& A, const Matrix& B);
         static std::vector<Matrix> get_sub_matrices(const Matrix& parent);
@@ -14,7 +15,6 @@ class MatrixMult {
         static Matrix subtract(const Matrix& A, const Matrix& B);
         static Matrix sub_matrices_to_matrix(const std::vector<Matrix> &sub_matrices, size_t size); 
         static Matrix inner_bloques_paralelos(const Matrix& A, const Matrix& B);
-   public:
         static Matrix tradicional(const Matrix& A, const Matrix& B);
         static Matrix vector(const Matrix& A, const Matrix& B);
         static Matrix transpuesta(const Matrix& A, const Matrix& B);

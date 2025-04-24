@@ -7,6 +7,7 @@
 
 #include "matrix_factory.h"
 #include "matrix_multiplication.h"
+#include "matrix_parallel_multiplication.h"
 
 
 void print_matrix(Matrix matrix){
@@ -74,6 +75,7 @@ int main(){
     std::cout << "[1] Secuencial     [2] Paralelizado" << std::endl;
     int tipo = 0;
     std::cin >> tipo;
+    bool is_secuencial = tipo == 1 ? true : false;
 
     std::cout << "Elige un algoritmo: " << std::endl;
     std::cout << "[1] Tradicional      [2] Vector" << std::endl;
@@ -87,29 +89,55 @@ int main(){
     for (size_t potencia = 1; potencia < 10;potencia++) {
         size_t size = static_cast<int>(pow(2, potencia));
 
-        switch (algoritmo)
-        {
-        case 1:
-            test_function(size, MatrixMult::tradicional, factory);
-            break;
-        
-        case 2:
-            test_function(size, MatrixMult::vector, factory);
-            break;
-        case 3:
-            test_function(size, MatrixMult::transpuesta, factory);
-            break;
-        case 4:
-            test_function(size, MatrixMult::bloques_iterativo, factory);
-            break;
-        case 5:
-            test_function(size, MatrixMult::bloques_recursivo, factory);
-            break;
-        case 6:
-            test_function(size, MatrixMult::strassen, factory);
-            break;
-        default:
-            break;
+        if (is_secuencial){
+            switch (algoritmo) {
+            case 1:
+                test_function(size, MatrixMult::tradicional, factory);
+                break;
+            
+            case 2:
+                test_function(size, MatrixMult::vector, factory);
+                break;
+            case 3:
+                test_function(size, MatrixMult::transpuesta, factory);
+                break;
+            case 4:
+                test_function(size, MatrixMult::bloques_iterativo, factory);
+                break;
+            case 5:
+                test_function(size, MatrixMult::bloques_recursivo, factory);
+                break;
+            case 6:
+                test_function(size, MatrixMult::strassen, factory);
+                break;
+            default:
+                break;
+            }
+        }
+        else {
+            switch (algoritmo) {
+                case 1:
+                    test_function(size, MatrixParallelMult::tradicional, factory);
+                    break;
+                
+                case 2:
+                    test_function(size, MatrixParallelMult::vector, factory);
+                    break;
+                case 3:
+                    test_function(size, MatrixParallelMult::transpuesta, factory);
+                    break;
+                case 4:
+                    test_function(size, MatrixParallelMult::bloques_iterativo, factory);
+                    break;
+                case 5:
+                    test_function(size, MatrixParallelMult::bloques_recursivo, factory);
+                    break;
+                case 6:
+                    test_function(size, MatrixParallelMult::strassen, factory);
+                    break;
+                default:
+                    break;
+                }
         }
     }
 
