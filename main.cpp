@@ -59,6 +59,7 @@ void test_function(size_t size, std::function<Matrix(Matrix, Matrix)> mult, Matr
     double time_mean = mean(time);
     double time_standar_desviation = standar_desviation(time);
 
+    std::cout << "----------------------------" << std::endl;
     std::cout << "size: " << size << std::endl;
     std::cout << "mean[ms]: " << time_mean << std::endl;
     std::cout << "standar_desviation: " << time_standar_desviation<< std::endl;
@@ -69,11 +70,47 @@ int main(){
     
     MatrixFactory factory = MatrixFactory();
 
+
+    std::cout << "[1] Secuencial     [2] Paralelizado" << std::endl;
+    int tipo = 0;
+    std::cin >> tipo;
+
+    std::cout << "Elige un algoritmo: " << std::endl;
+    std::cout << "[1] Tradicional      [2] Vector" << std::endl;
+    std::cout << "[3] Traspuesta       [4] Bloque iterativo" << std::endl;
+    std::cout << "[5] Bloque recursivo [6] Strassen" << std::endl;
+    int algoritmo = 0;
+    std::cin >> algoritmo;
+
+
     int rep = 10;    
     for (size_t potencia = 1; potencia < 10;potencia++) {
         size_t size = static_cast<int>(pow(2, potencia));
 
-        test_function(size, MatrixMult::tradicional, factory);
+        switch (algoritmo)
+        {
+        case 1:
+            test_function(size, MatrixMult::tradicional, factory);
+            break;
+        
+        case 2:
+            test_function(size, MatrixMult::vector, factory);
+            break;
+        case 3:
+            test_function(size, MatrixMult::transpuesta, factory);
+            break;
+        case 4:
+            test_function(size, MatrixMult::bloques_iterativo, factory);
+            break;
+        case 5:
+            test_function(size, MatrixMult::bloques_recursivo, factory);
+            break;
+        case 6:
+            test_function(size, MatrixMult::strassen, factory);
+            break;
+        default:
+            break;
+        }
     }
 
     return 0;

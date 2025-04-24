@@ -58,6 +58,28 @@ Matrix MatrixMult::vector(const Matrix& A, const Matrix& B) {
     return result;
 }
 
+Matrix MatrixMult::bloques_iterativo(const Matrix& A, const Matrix& B) {
+    size_t parent_size = A.size();
+    size_t block_size = parent_size/2;
+
+    Matrix result = create_matrix(parent_size);
+    for (int i = 0; i < parent_size; i += block_size) {
+        for (int j = 0; j < parent_size; j += block_size) {
+            for (int k = 0; k < parent_size; k += block_size) {
+                for (int ii = i; ii < std::min(i + block_size, parent_size); ii++) {
+                    for (int jj = j; jj < std::min(j + block_size, parent_size); jj++) {
+                        for (int kk = k; kk < std::min(k + block_size, parent_size); kk++) {
+                            result[ii][jj] += A[ii][kk] * B[kk][jj];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
 Matrix MatrixMult::case_base(const Matrix& A, const Matrix& B) {
     return Matrix{std::vector<int>{A[0][0]*B[0][0]}};
 }
@@ -118,7 +140,7 @@ Matrix MatrixMult::sub_matrices_to_matrix(const std::vector<Matrix> &sub_matrice
     return result;
 }
 
-Matrix MatrixMult::bloques(const Matrix& A,const Matrix& B){
+Matrix MatrixMult::bloques_recursivo(const Matrix& A,const Matrix& B){
     size_t size = A.size();
     
     if (size == 1) {
@@ -131,10 +153,10 @@ Matrix MatrixMult::bloques(const Matrix& A,const Matrix& B){
 
     std::vector<Matrix> results_sub_matrices(4, Matrix(size/2, std::vector<int>(size/2, 0)));
 
-    results_sub_matrices[0] = add(bloques(sub_A[0], sub_B[0]), bloques(sub_A[1], sub_B[2]));
-    results_sub_matrices[1] = add(bloques(sub_A[0], sub_B[1]), bloques(sub_A[1], sub_B[3]));
-    results_sub_matrices[2] = add(bloques(sub_A[2], sub_B[0]), bloques(sub_A[3], sub_B[2]));
-    results_sub_matrices[3] = add(bloques(sub_A[2], sub_B[1]), bloques(sub_A[3], sub_B[3]));
+    results_sub_matrices[0] = add(bloques_recursivo(sub_A[0], sub_B[0]), bloques_recursivo(sub_A[1], sub_B[2]));
+    results_sub_matrices[1] = add(bloques_recursivo(sub_A[0], sub_B[1]), bloques_recursivo(sub_A[1], sub_B[3]));
+    results_sub_matrices[2] = add(bloques_recursivo(sub_A[2], sub_B[0]), bloques_recursivo(sub_A[3], sub_B[2]));
+    results_sub_matrices[3] = add(bloques_recursivo(sub_A[2], sub_B[1]), bloques_recursivo(sub_A[3], sub_B[3]));
 
     Matrix result = sub_matrices_to_matrix(results_sub_matrices, size);
     
@@ -189,19 +211,19 @@ Matrix MatrixMult::inner_bloques_paralelos(const Matrix& A, const Matrix& B) {
     
     #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
     {
-        results_sub_matrices[0] = add(bloques(sub_A[0], sub_B[0]), bloques(sub_A[1], sub_B[2]));
+        results_sub_matrices[0] = add(bloques_recursivo(sub_A[0], sub_B[0]), bloques_recursivo(sub_A[1], sub_B[2]));
     }
     #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
     {
-        results_sub_matrices[1] = add(bloques(sub_A[0], sub_B[1]), bloques(sub_A[1], sub_B[3]));
+        results_sub_matrices[1] = add(bloques_recursivo(sub_A[0], sub_B[1]), bloques_recursivo(sub_A[1], sub_B[3]));
     }
     #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
     {
-        results_sub_matrices[2] = add(bloques(sub_A[2], sub_B[0]), bloques(sub_A[3], sub_B[2]));
+        results_sub_matrices[2] = add(bloques_recursivo(sub_A[2], sub_B[0]), bloques_recursivo(sub_A[3], sub_B[2]));
     }
     #pragma omp task shared(results_sub_matrices) firstprivate(sub_A, sub_B)
     {
-        results_sub_matrices[3] = add(bloques(sub_A[2], sub_B[1]), bloques(sub_A[3], sub_B[3]));
+        results_sub_matrices[3] = add(bloques_recursivo(sub_A[2], sub_B[1]), bloques_recursivo(sub_A[3], sub_B[3]));
     }
     #pragma omp taskwait
 

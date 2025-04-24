@@ -28,7 +28,7 @@ int main(){
     print_matrix(MatrixMult::vector(A,B));
 
     std::cout << "-----block multiplication-----" << std::endl;
-    print_matrix(MatrixMult::bloques(A,B));
+    print_matrix(MatrixMult::bloques_recursivo(A,B));
     std::cout << "-----strassen multiplication-----" << std::endl;
     print_matrix(MatrixMult::strassen(A,B));
 

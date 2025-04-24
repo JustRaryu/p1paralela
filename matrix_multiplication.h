@@ -18,7 +18,8 @@ class MatrixMult {
         static Matrix tradicional(const Matrix& A, const Matrix& B);
         static Matrix vector(const Matrix& A, const Matrix& B);
         static Matrix transpuesta(const Matrix& A, const Matrix& B);
-        static Matrix bloques(const Matrix& A, const Matrix& B);
+        static Matrix bloques_iterativo(const Matrix& A, const Matrix& B);
+        static Matrix bloques_recursivo(const Matrix& A, const Matrix& B);
         static Matrix strassen(const Matrix& A, const Matrix& B);
         static Matrix bloques_paralelos(const Matrix& A, const Matrix& B);
    };
